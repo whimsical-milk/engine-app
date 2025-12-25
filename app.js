@@ -9,6 +9,17 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
+import { setPersistence, browserLocalPersistence } from 
+"https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Auth persistence set to local (keeps login across reloads)");
+  })
+  .catch((err) => {
+    console.error("Persistence error:", err);
+  });
+
 import {
   getFirestore,
   doc,

@@ -28,9 +28,7 @@ const userInfo = document.getElementById("userInfo");
 const marketplaceBtn = document.getElementById("marketplaceBtn");
 
 /* Ensure persistence */
-setPersistence(auth, browserLocalPersistence)
-  .then(() => console.log("Auth persistence set"))
-  .catch(console.error);
+setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 /* Event listeners */
 window.addEventListener("DOMContentLoaded", () => {
@@ -40,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
   marketplaceBtn.addEventListener("click", () => location.href = "marketplace.html");
 });
 
-/* Display profile */
+/* Display profile after login/signup */
 async function displayProfile(user) {
   try {
     const snap = await getDoc(doc(db, "users", user.uid));
@@ -49,8 +47,6 @@ async function displayProfile(user) {
       userInfo.innerText = `Logged in as ${data.username}`;
       authBox.style.display = "none";
       profileBox.style.display = "block";
-    } else {
-      throw new Error("No username found");
     }
   } catch (err) {
     console.error(err);

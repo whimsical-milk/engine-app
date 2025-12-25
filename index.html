@@ -1,27 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Game Engine Login</title>
+  <title>Profile / Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="box">
-  <h2>Sign Up</h2>
-  <input id="su-username" placeholder="Username">
-  <input id="su-email" placeholder="Email">
-  <input id="su-password" type="password" placeholder="Password">
-  <button id="signupBtn">Create Account</button>
-</div>
+<div class="container">
 
-<div class="box">
-  <h2>Login</h2>
-  <input id="li-email" placeholder="Email">
-  <input id="li-password" type="password" placeholder="Password">
-  <button id="loginBtn">Login</button>
-  <button class="link" id="forgotBtn">Forgot password?</button>
+  <h1>Dashboard</h1>
+
+  <!-- Logged-in info -->
+  <div id="profileBox" class="box" style="display:none">
+    <p id="userInfo"></p>
+    <button id="marketplaceBtn">Go to Marketplace</button>
+  </div>
+
+  <!-- Login / Signup form -->
+  <div id="authBox" class="box" style="display:none">
+
+    <h2>Sign Up</h2>
+    <input id="su-username" placeholder="Username">
+    <input id="su-email" placeholder="Email">
+    <input id="su-password" type="password" placeholder="Password">
+    <button id="signupBtn">Create Account</button>
+
+    <h2>Login</h2>
+    <input id="li-email" placeholder="Email">
+    <input id="li-password" type="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <button id="forgotBtn" class="link">Forgot password?</button>
+
+  </div>
+
 </div>
 
 <script type="module" src="app.js"></script>

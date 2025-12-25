@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Game Engine Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,15 +13,15 @@
   <input id="su-username" placeholder="Username">
   <input id="su-email" placeholder="Email">
   <input id="su-password" type="password" placeholder="Password">
-  <button onclick="signup()">Create Account</button>
+  <button id="signupBtn">Create Account</button>
 </div>
 
 <div class="box">
   <h2>Login</h2>
   <input id="li-email" placeholder="Email">
   <input id="li-password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button class="link" onclick="forgot()">Forgot password?</button>
+  <button id="loginBtn">Login</button>
+  <button class="link" id="forgotBtn">Forgot password?</button>
 </div>
 
 <script type="module" src="app.js"></script>

@@ -1,73 +1,40 @@
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail
-} from
-"https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+  sendPasswordResetEmail,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-import { setPersistence, browserLocalPersistence } from 
-"https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Auth persistence set to local (keeps login across reloads)");
-  })
-  .catch((err) => {
-    console.error("Persistence error:", err);
-  });
-
-onAuthStateChanged(auth, async (user) => {
-  const userInfo = document.getElementById("user-info");
-  
-  if (user) {
-    try {
-      const snap = await getDoc(doc(db, "users", user.uid));
-      const data = snap.data();
-      userInfo.innerText = `Logged in as ${data.username}`;
-    } catch (err) {
-      console.error(err);
-      userInfo.innerText = "Error loading user info";
-    }
-  } else {
-    userInfo.innerText = "Redirecting...";
-    setTimeout(() => {
-      location.href = "index.html";
-    }, 500); // small delay ensures Firebase finishes initialization
-  }
-});
-
-import {
-  getFirestore,
-  doc,
-  setDoc
-} from
-"https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
-/* 🔥 YOUR FIREBASE CONFIG */
+/* 🔥 Firebase config */
 const firebaseConfig = {
   apiKey: "AIzaSyAeh-4-DhdMgEyQ8uv6A2ChQDdm-ID2K0E",
   authDomain: "web-app-7f9c9.firebaseapp.com",
   projectId: "web-app-7f9c9",
 };
 
+/* Initialize Firebase */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* WAIT FOR PAGE TO LOAD */
-window.addEventListener("DOMContentLoaded", () => {
+/* Ensure login persists across reloads */
+setPersistence(auth, browserLocalPersistence)
+  .then(() => console.log("Auth persistence set"))
+  .catch(console.error);
 
+/* Wait for DOM to load before attaching events */
+window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("signupBtn").addEventListener("click", signup);
   document.getElementById("loginBtn").addEventListener("click", login);
   document.getElementById("forgotBtn").addEventListener("click", forgot);
-
 });
 
-/* SIGN UP */
+/* SIGN UP FUNCTION */
 async function signup() {
   const username = document.getElementById("su-username").value.trim();
   const email = document.getElementById("su-email").value.trim();
@@ -80,38 +47,55 @@ async function signup() {
 
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+    // Save user info in Firestore
     await setDoc(doc(db, "users", cred.user.uid), {
       username,
       email,
       created: Date.now()
     });
 
+    // Redirect to marketplace immediately
     location.href = "marketplace.html";
+
   } catch (e) {
     alert(e.message);
   }
 }
 
-/* LOGIN */
+/* LOGIN FUNCTION */
 async function login() {
   const email = document.getElementById("li-email").value.trim();
   const password = document.getElementById("li-password").value;
 
+  if (!email || !password) {
+    alert("Email and password required");
+    return;
+  }
+
   try {
     await signInWithEmailAndPassword(auth, email, password);
+
+    // Redirect to marketplace immediately
     location.href = "marketplace.html";
+
   } catch (e) {
     alert(e.message);
   }
 }
 
-/* FORGOT PASSWORD */
+/* FORGOT PASSWORD FUNCTION */
 async function forgot() {
   const email = document.getElementById("li-email").value.trim();
   if (!email) {
     alert("Enter your email first");
     return;
   }
-  await sendPasswordResetEmail(auth, email);
-  alert("Password reset email sent");
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset email sent!");
+  } catch (e) {
+    alert(e.message);
+  }
 }

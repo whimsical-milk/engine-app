@@ -5,7 +5,8 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -20,28 +21,45 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* Ensure persistence */
-setPersistence(auth, browserLocalPersistence)
-  .then(() => console.log("Auth persistence set"))
-  .catch(console.error);
-
 /* DOM elements */
 const authBox = document.getElementById("authBox");
 const profileBox = document.getElementById("profileBox");
 const userInfo = document.getElementById("userInfo");
 const marketplaceBtn = document.getElementById("marketplaceBtn");
 
-/* Auth buttons */
+/* Ensure persistence */
+setPersistence(auth, browserLocalPersistence)
+  .then(() => console.log("Auth persistence set"))
+  .catch(console.error);
+
+/* Event listeners */
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("signupBtn").addEventListener("click", signup);
   document.getElementById("loginBtn").addEventListener("click", login);
   document.getElementById("forgotBtn").addEventListener("click", forgot);
-  marketplaceBtn.addEventListener("click", () => {
-    location.href = "marketplace.html";
-  });
+  marketplaceBtn.addEventListener("click", () => location.href = "marketplace.html");
 });
 
-/* SIGN UP */
+/* Display profile */
+async function displayProfile(user) {
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const data = snap.data();
+    if (data && data.username) {
+      userInfo.innerText = `Logged in as ${data.username}`;
+      authBox.style.display = "none";
+      profileBox.style.display = "block";
+    } else {
+      throw new Error("No username found");
+    }
+  } catch (err) {
+    console.error(err);
+    authBox.style.display = "block";
+    profileBox.style.display = "none";
+  }
+}
+
+/* Signup */
 async function signup() {
   const username = document.getElementById("su-username").value.trim();
   const email = document.getElementById("su-email").value.trim();
@@ -56,7 +74,7 @@ async function signup() {
   } catch (e) { alert(e.message); }
 }
 
-/* LOGIN */
+/* Login */
 async function login() {
   const email = document.getElementById("li-email").value.trim();
   const password = document.getElementById("li-password").value;
@@ -69,7 +87,7 @@ async function login() {
   } catch (e) { alert(e.message); }
 }
 
-/* FORGOT PASSWORD */
+/* Forgot password */
 async function forgot() {
   const email = document.getElementById("li-email").value.trim();
   if (!email) { alert("Enter email first"); return; }
@@ -78,25 +96,8 @@ async function forgot() {
   catch (e) { alert(e.message); }
 }
 
-/* DISPLAY PROFILE AFTER LOGIN/SIGNUP */
-async function displayProfile(user) {
-  try {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    const data = snap.data();
-    userInfo.innerText = `Logged in as ${data.username}`;
-    authBox.style.display = "none";
-    profileBox.style.display = "block";
-  } catch (err) {
-    console.error(err);
-    userInfo.innerText = "Error loading user info";
-    authBox.style.display = "block";
-    profileBox.style.display = "none";
-  }
-}
-
-/* CHECK AUTH STATE ON PAGE LOAD */
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+/* Check auth state on page load */
 onAuthStateChanged(auth, user => {
   if (user) displayProfile(user);
   else { authBox.style.display = "block"; profileBox.style.display = "none"; }
-}); 
+});

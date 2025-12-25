@@ -1,7 +1,4 @@
-* {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 body {
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;
@@ -13,42 +10,15 @@ body {
   align-items: flex-start;
   padding: 20px;
 }
-
-.container {
-  width: 100%;
-  max-width: 400px;
-}
-
+.container { width: 100%; max-width: 400px; }
 .box {
   background: #1e1e1e;
   padding: 15px;
   margin: 12px 0;
   border-radius: 10px;
 }
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-hr {
-  border: 0;
-  height: 1px;
-  background: #444;
-  margin: 20px 0;
-}
+h1 { text-align: center; margin-bottom: 20px; }
+input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; font-size:16px; }
+button { width: 100%; padding: 12px; margin-top:8px; border-radius: 8px; border: none; font-size:16px; background:#4caf50; color:#fff; cursor:pointer; }
+button:active { transform: scale(0.98); }
+button.link { background:none; color:#aaa; font-size:14px; }

@@ -47,16 +47,16 @@ const db = getFirestore(app);
 
 /* AUTH CHECK */
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
+  if (user) {
+    // User is logged in — show their info
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const data = snap.data();
+    document.getElementById("user-info").innerText =
+      `Logged in as ${data.username}`;
+  } else {
+    // User is NOT logged in — redirect
     location.href = "index.html";
-    return;
   }
-
-  const snap = await getDoc(doc(db, "users", user.uid));
-  const data = snap.data();
-
-  document.getElementById("user-info").innerText =
-    `Logged in as ${data.username}`;
 });
 
 /* LOGOUT */

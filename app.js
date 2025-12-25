@@ -20,6 +20,26 @@ setPersistence(auth, browserLocalPersistence)
     console.error("Persistence error:", err);
   });
 
+onAuthStateChanged(auth, async (user) => {
+  const userInfo = document.getElementById("user-info");
+  
+  if (user) {
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.data();
+      userInfo.innerText = `Logged in as ${data.username}`;
+    } catch (err) {
+      console.error(err);
+      userInfo.innerText = "Error loading user info";
+    }
+  } else {
+    userInfo.innerText = "Redirecting...";
+    setTimeout(() => {
+      location.href = "index.html";
+    }, 500); // small delay ensures Firebase finishes initialization
+  }
+});
+
 import {
   getFirestore,
   doc,
